@@ -34,7 +34,10 @@ class Base(Controller):
         remote_port = self.app.config.get('hollywood_agent', 'RemotePort', fallback=4200)
         use_hostname = self.app.config.get('hollywood_agent', 'UseHostname', fallback=True)
         local_address = socket.gethostname() if use_hostname else get_local_ip()
-
+        
+        if '.local' not in local_address and use_hostname:
+            local_address = '{0}.local'.format(local_address)
+        
         # Get server ip and port values, use user-provided values if available, else use configuration or fallback values
         server_ip = self.app.pargs.ip if self.app.pargs.ip else self.app.config.get('hollywood_agent', 'ServerIP', fallback=get_local_ip())
         server_port = self.app.pargs.port if self.app.pargs.port else self.app.config.get('hollywood_agent', 'ServerPort', fallback=5001)
