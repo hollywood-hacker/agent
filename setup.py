@@ -1,18 +1,17 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
-    name='worker',
-    version='1.0',
-    py_modules=['worker'],
-    install_requires=[
-        'configparser',
-        'keyboard',
-        'flask',
-        'requests',
-    ],
+    name='hollywood-agent',
+    version='0.0.1',
+    url='https://yourprojecturl.com',
+    author='Your Name',
+    author_email='your-email@example.com',
+    description='Description of your project',
+    packages=find_packages(),    
+    install_requires=[],
     entry_points={
         'console_scripts': [
-            'worker = worker:main',
+            'hollywood-agent=hollywood_agent:main',
         ],
     },
 )

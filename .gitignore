@@ -1,6 +1,61 @@
-*.egg-info
+# .gitignore
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller
+build/
+dist/
+
+# Distribution / packaging
+*.egg-info/
+*.egg
 dist/
 build/
+*.pyc
+*.pyo
+*.pyd
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environments
 .venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# PyCharm
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# macOS
 .DS_Store
-__pycache__
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Operating System Files
+Thumbs.db
+Desktop.ini
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.pytest_cache/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
