@@ -1,10 +1,12 @@
-# periodic_task.py
 import threading
+import os
 from ..utils.utils import run_request
+import logging
+import requests
 
 class PeriodicTask:
     """Class to encapsulate the periodic pinging of the remote host."""
-    
+
     def __init__(self, remote_host, remote_port, use_hostname, local_address):
         self.remote_host = remote_host
         self.remote_port = remote_port
@@ -19,7 +21,8 @@ class PeriodicTask:
         """Function to run periodically."""
         print('Pinging manager application')
         try:
-            run_request(f"http://{self.remote_host}:{self.remote_port}?{self.local_address}")
+            os_info = os.uname()   # Retrieve OS information
+            run_request(f"http://{self.remote_host}:{self.remote_port}?host={self.local_address}&port={self.remote_port}&os={os_info.sysname}")
         except requests.exceptions.RequestException as e:
             logging.error('Error reaching host: %s', e)
         except Exception as e:

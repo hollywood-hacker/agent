@@ -4,28 +4,6 @@ from .server.flask_server import FlaskServer
 from .utils.utils import get_local_ip
 import socket
 
-def get_configuration_values(app):
-    # Load config values
-    remote_host = app.config.get('hollywood_agent', 'RemoteHost', fallback='localhost')
-    remote_port = app.config.get('hollywood_agent', 'RemotePort', fallback=4200)
-    use_hostname = app.config.get('hollywood_agent', 'UseHostname', fallback=True)
-    local_address = socket.gethostname() if use_hostname else get_local_ip()
-    
-    server_ip = app.config.get('hollywood_agent', 'ServerIP', fallback='0.0.0.0')
-    server_port = app.config.get('hollywood_agent', 'ServerPort', fallback=5001)
-
-    return remote_host, remote_port, use_hostname, local_address, server_ip, server_port
-
-def start_periodic_task(remote_host, remote_port, use_hostname, local_address):
-    # Start the periodic task
-    task = PeriodicTask(remote_host, remote_port, use_hostname, local_address)
-    task.start()
-
-def start_flask_server(server_ip, server_port):
-    # Start the Flask server
-    server = FlaskServer(server_ip, server_port)
-    server.start()
-
 class Base(Controller):
     class Meta:
         label = 'base'
@@ -39,11 +17,35 @@ class Base(Controller):
 
     @ex(
         help='Start agent server',
+        arguments=[
+            (['-i', '--ip'],
+             {'help': 'IP address of the server',
+              'action': 'store',
+              'dest': 'ip'}),
+            (['-p', '--port'],
+             {'help': 'Port number of the server',
+              'action': 'store',
+              'dest': 'port'})
+        ],
     )
     def start(self):
-        remote_host, remote_port, use_hostname, local_address, server_ip, server_port = get_configuration_values(self.app)
-        start_periodic_task(remote_host, remote_port, use_hostname, local_address)
-        start_flask_server(server_ip, server_port)
+        # Load config values directly
+        remote_host = self.app.config.get('hollywood_agent', 'RemoteHost', fallback='localhost')
+        remote_port = self.app.config.get('hollywood_agent', 'RemotePort', fallback=4200)
+        use_hostname = self.app.config.get('hollywood_agent', 'UseHostname', fallback=True)
+        local_address = socket.gethostname() if use_hostname else get_local_ip()
+
+        # Get server ip and port values, use user-provided values if available, else use configuration or fallback values
+        server_ip = self.app.pargs.ip if self.app.pargs.ip else self.app.config.get('hollywood_agent', 'ServerIP', fallback=get_local_ip())
+        server_port = self.app.pargs.port if self.app.pargs.port else self.app.config.get('hollywood_agent', 'ServerPort', fallback=5001)
+        
+        # Start the periodic task
+        task = PeriodicTask(remote_host, remote_port, use_hostname, local_address)
+        task.start()
+
+        # Start the Flask server
+        server = FlaskServer(server_ip, server_port)
+        server.start()
 
 
 class MyApp(App):
