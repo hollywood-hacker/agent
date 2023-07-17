@@ -2,7 +2,7 @@
 
 block_cipher = None
 
-a = Analysis(['hollywood_agent.py'],
+a = Analysis(['hollywood_agent/main.py'],
              pathex=['.'],
              binaries=[],
              datas=[('config', 'config')],
@@ -13,6 +13,10 @@ a = Analysis(['hollywood_agent.py'],
                 'cement.ext.ext_plugin', 
                 'cement.ext.ext_configparser',
                 'cement.ext.ext_logging',
+                'hollywood_agent.controllers',
+                'hollywood_agent.flask_server',
+                'hollywood_agent.periodic_task',
+                'hollywood_agent.utils',
             ],
              hookspath=[],
              runtime_hooks=[],

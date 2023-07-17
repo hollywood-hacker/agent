@@ -13,8 +13,10 @@ $(VENV_NAME)/bin/activate: requirements-dev.txt
 	test -d $(VENV_NAME) || virtualenv -p python3 $(VENV_NAME)
 	$(PIP) install --upgrade pip
 	$(PIP) install -Ur requirements-dev.txt
+	$(PIP) install -Ur requirements.txt
 	touch $(VENV_NAME)/bin/activate
-	$(PYTHON) setup.py develop
+	$(PIP) install -e .
+	@echo "Run 'source $(VENV_NAME)/bin/activate' to activate the virtual environment."
 
 .PHONY: dev_install
 dev_install:
@@ -23,7 +25,7 @@ dev_install:
 .PHONY: build
 build: venv
 	$(PIP) install pyinstaller
-	$(VENV_NAME)/bin/pyinstaller --onefile hollywood_agent.py
+	$(VENV_NAME)/bin/pyinstaller hollywood-agent.spec
 
 .PHONY: lint
 lint:
