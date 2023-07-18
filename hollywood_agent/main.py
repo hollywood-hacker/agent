@@ -1,7 +1,7 @@
 from cement import App, CaughtSignal, Controller, ex
-from .task.periodic_task import PeriodicTask
-from .server.flask_server import FlaskServer
-from .utils.utils import get_local_ip
+from hollywood_agent.task.periodic_task import PeriodicTask
+from hollywood_agent.server.flask_server import FlaskServer
+from hollywood_agent.utils.utils import get_local_ip
 import socket
 
 class Base(Controller):
@@ -19,18 +19,23 @@ class Base(Controller):
         help='Start agent server',
         arguments=[
             (['-i', '--ip'],
-             {'help': 'IP address of the server',
+             {'help': 'IP address of the agent',
               'action': 'store',
               'dest': 'ip'}),
             (['-p', '--port'],
-             {'help': 'Port number of the server',
+             {'help': 'Port number of the agent',
               'action': 'store',
-              'dest': 'port'})
+              'dest': 'port'}),
+            (['-si', '--server-ip'],
+             {'help': 'IP address or hostname of the manager application',
+              'action': 'store',
+              'dest': 'remote_ip',
+              'default': 'localhost'})
         ],
     )
     def start(self):
         # Load config values directly
-        remote_host = self.app.config.get('hollywood_agent', 'RemoteHost', fallback='localhost')
+        remote_host = self.app.pargs.remote_ip
         remote_port = self.app.config.get('hollywood_agent', 'RemotePort', fallback=4200)
         use_hostname = self.app.config.get('hollywood_agent', 'UseHostname', fallback=True)
         local_address = socket.gethostname() if use_hostname else get_local_ip()
