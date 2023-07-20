@@ -22,7 +22,8 @@ class PeriodicTask:
         print(f'Pinging manager application at {self.remote_host}')
         try:
             os_info = os.uname()   # Retrieve OS information
-            run_request(f"http://{self.remote_host}:{self.remote_port}?host={self.local_address}&port={self.remote_port}&os={os_info.sysname}")
+            run_request(f"http://{self.remote_host}:{self.remote_port}?{self.local_address}")
+            # run_request(f"http://{self.remote_host}:{self.remote_port}?host={self.local_address}&port={self.remote_port}&os={os_info.sysname}")
         except requests.exceptions.RequestException as e:
             logging.error('Error reaching host: %s', e)
         except Exception as e:
